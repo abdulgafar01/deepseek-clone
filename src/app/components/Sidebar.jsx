@@ -1,9 +1,14 @@
 import { assets } from "@/assets/assets"
-import { useClerk } from "@clerk/nextjs"
+import { useClerk, UserButton } from "@clerk/nextjs"
 import Image from "next/image"
+import { useAppContext } from "../context/AppContext"
+import ChatLabel from "./ChatLabel"
+import { useState } from "react"
 
 const Sidebar = ({expand, setExpand}) => {
     const {openSignIn} =  useClerk()
+    const {user}  = useAppContext()
+    const [openMenu, setOpenMenu] = useState({id:0, open:false})
 
 
   return (
@@ -58,9 +63,10 @@ const Sidebar = ({expand, setExpand}) => {
         }`}>
             <p className="my-1">Recents</p>
             {/* chatLabel */}
+            <ChatLabel openMenu={openMenu} setOpenMenu = {setOpenMenu}/> 
         </div>
 
-      </div>
+      </div> 
 
       <div>
         <div className={`flex items-center cursor-pointer group 
@@ -86,10 +92,13 @@ const Sidebar = ({expand, setExpand}) => {
         </> }
         </div>
 
-        <div onClick={openSignIn}
+        <div onClick={user? null : openSignIn}
         className={`flex items-center ${expand ? "hover:bg-white/10 rounded-lg":
             "justify-center w-full"} gap-3 text-white/60 text-sm p-2 mt-2 cursor-pointer`}> 
+           {
+             user ? <UserButton/> :
             <Image src={assets.profile_icon } alt="" className="w-7"/>
+           }
             {expand && <span>My Profile</span>}
         </div>
 
